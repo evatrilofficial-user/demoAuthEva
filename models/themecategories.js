@@ -1,7 +1,6 @@
 "use strict";
 import slugify from "slugify";
-import AppError from "../utils/appError.js";
-import { validate } from "graphql";
+import AppError from "../utils/AppError.js";
 
 export default (sequelize, DataTypes) => {
   const ThemeCategory = sequelize.define(
