@@ -8,14 +8,20 @@ const handleSequelizeError = (error, res) => {
     stack: error.stack,
     errors: error.errors || [],
   });
+  const extractMessage = () => {
+    if (error.errors && error.errors.length > 0) {
+      return error.errors.map((err) => err.message).join(", ");
+    }
+    return error.message;
+  };
 
   // Return only safe, minimal responses
   switch (error.name) {
     case "SequelizeValidationError":
-      return new AppError("Invalid input data.", 400);
+      return new AppError(extractMessage(), 400, true);
 
     case "SequelizeUniqueConstraintError":
-      return new AppError("Duplicate entry. This record already exists.", 409);
+      return new AppError(extractMessage(), 409, true);
 
     case "SequelizeForeignKeyConstraintError":
       return new AppError("Invalid reference. Please check related data.", 400);

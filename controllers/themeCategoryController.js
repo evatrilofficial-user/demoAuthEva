@@ -48,21 +48,7 @@ export const updateThemeCategory = async (req, res, next) => {
       req.params.id,
       req.body
     );
-    logActivity(
-      3,
-      null,
-      `Theme category updated - ${updatedCategory.name}`,
-      `Theme Category`,
-      {
-        id: 3,
-        name: updatedCategory.name,
-        slug: updatedCategory.slug,
-        type: updatedCategory.type,
-        status: updatedCategory.status,
-      },
-      updatedCategory.created_at,
-      updatedCategory.updated_at
-    );
+    
     return res.status(200).json({
       success: true,
       message: "Theme category updated successfully",

@@ -3,8 +3,14 @@ import { sequelize, Sequelize, remoteSequelize } from "../models/index.js";
 import OccasionModelFactory from "../models/remote/occasion.js";
 import OccasionFieldModelFactory from "../models/occasionfield.js";
 
-const OccasionModel = OccasionModelFactory(remoteSequelize, Sequelize.DataTypes);
-const OccasionFieldModel = OccasionFieldModelFactory(sequelize, Sequelize.DataTypes);
+const OccasionModel = OccasionModelFactory(
+  remoteSequelize,
+  Sequelize.DataTypes
+);
+const OccasionFieldModel = OccasionFieldModelFactory(
+  sequelize,
+  Sequelize.DataTypes
+);
 
 export const bulkCreateOccasionFields = (data, transaction, adminId) => {
   return OccasionFieldModel.bulkCreate(data, {
@@ -30,7 +36,8 @@ export const deleteOccasionFieldById = (id, adminId) => {
   );
 };
 
-export const findAllOccasionFields = () => OccasionFieldModel.findAll({ order: [["order_no", "ASC"]] });
+export const findAllOccasionFields = () =>
+  OccasionFieldModel.findAll({ order: [["order_no", "ASC"]] });
 
 export const findOccasionFieldById = (id) => OccasionFieldModel.findByPk(id);
 

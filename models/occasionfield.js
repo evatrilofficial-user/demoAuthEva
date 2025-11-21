@@ -48,6 +48,11 @@ export default (sequelize, DataTypes) => {
       deletedAt: "deleted_at",
     }
   );
+  OccasionField.addHook("beforeDestroy", async (field, options) => {
+    // When soft deleting, clear order_no to avoid unique constraint issues
+    field.order_no = null;
+    await field.save({ hooks: false }); // avoid recursion
+  });
 
   return OccasionField;
 };

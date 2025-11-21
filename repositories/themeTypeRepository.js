@@ -1,5 +1,6 @@
+import { includes } from "zod";
 import db from "../models/index.js";
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 
 export const createThemeTypeRepo = async (data) => {
   return await db.ThemeType.create(data);
@@ -38,4 +39,23 @@ export const updateThemeTypeRepo = async (themeType, data) => {
 
 export const deleteThemeTypeRepo = async (themeType) => {
   return await themeType.destroy(); // paranoid = true
+};
+
+export const findThemeCategory = async (category_id) => {
+  return await db.ThemeCategory.findOne({ where: { id: category_id } });
+};
+
+export const getThemeTypeByCategoryRepo = async (category_id) => {
+  return await db.ThemeType.findAll({
+    where: { category_id: category_id },
+    include: [
+      {
+        model: db.ThemeCategory,
+        as: "themeCategory",
+        attributes: ["id", "name"],
+      },
+    ],
+    attributes: ["id", "name", "status"],
+    order: [["created_at", "DESC"]],
+  });
 };

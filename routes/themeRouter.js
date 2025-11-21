@@ -26,7 +26,7 @@ router.patch(
 );
 
 router.get("/theme/get", getAllTheme);
-router.get("/country/get", countryCode);
+router.get("/country/get", countryCode); //allowed by all
 router.patch("/theme/update-status/:id", updateStatus);
 
 export default router;

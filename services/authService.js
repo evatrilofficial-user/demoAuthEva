@@ -1,16 +1,13 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import db from "../models/index.js";
 const { Admin } = db;
+import AppError from "../utils/AppError.js";
 import {
   findAdminByEmail,
-  findAdminById,
-  saveAdmin,
   findAdminById1,
 } from "../repositories/authRepository.js";
-// import logActivity from "../utils/logActivity.js";
-import { generateToken } from "../utils/requiredMethods.js";
-import AppError from "../utils/AppError.js";
 
 export const loginService = async ({ email, password }) => {
   if (!email || !password)
@@ -23,6 +20,7 @@ export const loginService = async ({ email, password }) => {
 
   const isMatch = await bcrypt.compare(password, admin.password);
   if (!isMatch) throw new AppError("incorrect password", 401);
+
   if (admin.reset_password_otp_expire) {
     if (new Date() > new Date(admin.reset_password_otp_expire)) {
       throw new AppError(
@@ -32,6 +30,7 @@ export const loginService = async ({ email, password }) => {
     }
   }
   const roles = admin.roles.map((r) => r.code);
+  
   const permissions = admin.roles.flatMap((r) =>
     r.permissions.map((p) => p.name)
   );

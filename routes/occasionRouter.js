@@ -3,9 +3,9 @@ import { getOccasions, updateOccasion ,getOccasionById} from "../controllers/occ
 
 const router = express.Router();
 
-router.get("/get-occasion", getOccasions);
+router.get("/get-occasion", getOccasions);//allowed for all
 router.patch("/update-occasion/:slug",updateOccasion)
-router.get("/get-occasion/:id",getOccasionById)
+router.get("/get-occasion/:id",getOccasionById)//allowed for all
 
 
 export default router;

@@ -1,9 +1,12 @@
+import { validate } from "../middlewares/validate.js";
 import {
   createThemeCategory,
   updateThemeCategory,
   getAllThemeCategories,
   deleteThemeCategory,
 } from "../controllers/themeCategoryController.js";
+
+import { createThemeCategorySchema } from "../validations/themeCategoryValidator.js";
 import express from "express";
 
 const router = express.Router();
@@ -11,7 +14,7 @@ const router = express.Router();
 
 router.post(
   "/theme-category/store",
-
+  validate(createThemeCategorySchema),
   createThemeCategory
 );
 router.patch(
@@ -25,7 +28,7 @@ router.delete(
   deleteThemeCategory
 );
 router.get(
-  "/theme-category/get",
+  "/theme-category/get", //allowed by all
 
   getAllThemeCategories
 );

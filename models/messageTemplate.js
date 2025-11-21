@@ -11,7 +11,7 @@ export default (sequelize, DataTypes) => {
       },
       occasion_id: {
         type: DataTypes.BIGINT,
-        allowNull: false,
+        allowNull: false,  // true
       },
       name: {
         type: DataTypes.STRING(150),
@@ -30,7 +30,7 @@ export default (sequelize, DataTypes) => {
       },
       media_type:{
         type:DataTypes.STRING(20),
-        allowNull:true
+        allowNull:true     
 
       },
       category: {
@@ -75,7 +75,7 @@ export default (sequelize, DataTypes) => {
       template_code: {
         type: DataTypes.STRING,
         allowNull: false,
-        comment: "Actual template code approved by WhatsApp",
+        comment: "Actual template code approved by WhatsApp",    //true
       },
       media_uploaded_at: {
         type: DataTypes.DATE,

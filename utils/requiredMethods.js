@@ -94,3 +94,24 @@ export const toUpperCaseSafe = (value) => {
   if (typeof value !== "string") return value;
   return value.toUpperCase();
 };
+
+export const sanitize = (value) =>{
+  return value.replace(/[^a-zA-Z0-9\s]/g, "").trim();
+  
+}
+export const sanitizeText = (str) => {
+  if (!str) return "";
+  return str
+    .trim()
+    .replace(/[^A-Za-z0-9\s]/g, "") // remove symbols: < > ? / ; etc
+    .replace(/\s+/g, " ");          // normalize spaces
+};
+
+
+export const slugifyCategory = (name) => {
+  return slugify(name, {
+    lower: true,
+    strict: true, // remove special characters
+    replacement: "-",
+  }) + "-invitation";
+};

@@ -2,6 +2,7 @@
 import bcrypt from "bcryptjs";
 import db from "../models/index.js";
 import { AdminRepository } from "../repositories/adminRepository.js";
+import { generateEMPId } from "../utils/generateEMPid.js";
 import { logger } from "../utils/logger.js";
 
 export const AdminService = {
@@ -14,11 +15,7 @@ export const AdminService = {
       if (existing) throw new Error("Email already exists");
 
       const hashedPassword = await bcrypt.hash(password, 10);
-      const random = Math.floor(1000 + Math.random() * 9000);
-      const emp_id = `EMP${new Date()
-        .toISOString()
-        .slice(0, 10)
-        .replace(/-/g, "")}-${random}`;
+      const emp_id = await generateEMPId();
 
       const admin = await AdminRepository.create(
         { name, email, phone, password: hashedPassword, emp_id, address, city },
@@ -43,14 +40,8 @@ export const AdminService = {
       filters
     );
     if (!admins || admins.length === 0) throw new Error("Admin not found");
-    const filteredAdmins = admins.filter(
-      (admin) => !admin.roles.some((role) => role.code === "SA")
-    );
 
-    if (filteredAdmins.length === 0)
-      throw new Error("No admins found excluding Super Admins");
-
-    return filteredAdmins.map((admin) => ({
+    return admins.map((admin) => ({
       id: admin.id,
       name: admin.name,
       email: admin.email,

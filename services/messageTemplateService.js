@@ -13,6 +13,7 @@ const OccasionModel = occasionFactoryModel(
 );
 
 export const MessageTemplateService = {
+
   async changeStatus(id, status) {
     if (![0, 1].includes(Number(status))) {
       throw new AppError("Invalid status value. Use 0 or 1.", 400);
@@ -40,6 +41,7 @@ export const MessageTemplateService = {
       throw new AppError("Failed to change template status", 500);
     }
   },
+
   // ✅ CREATE TEMPLATE
   async createTemplate(req) {
     const {
@@ -58,16 +60,6 @@ export const MessageTemplateService = {
       status,
     } = req.body;
 
-    // --- Basic validation ---
-    if (
-      !occasion_id ||
-      !name ||
-      !channel_id ||
-      !language_code ||
-      !template_code
-    ) {
-      throw new AppError("Missing required fields", 400);
-    }
 
     // --- Check if name already exists (unique validation) ---
     const existingTemplate = await MessageTemplateRepository.findByName(name);
@@ -76,12 +68,7 @@ export const MessageTemplateService = {
     }
 
     // --- Validate occasion ---
-    const occasion = await MessageTemplateRepository.findOccasionById(
-      OccasionModel,
-      occasion_id
-    );
-    if (!occasion) throw new AppError("Occasion not found", 404);
-
+    
     // --- Validate message channel ---
     const channel = await MessageTemplateRepository.findChannelById(channel_id);
     if (!channel) throw new AppError("Message channel not found", 404);
@@ -206,6 +193,8 @@ export const MessageTemplateService = {
       data: templates.rows,
     };
   },
+
+  // ✅ UPDATE TEMPLATE
   async getTemplateById(id) {
     const template = await db.MessageTemplate.findByPk(id, {
       attributes: ["id","name"],

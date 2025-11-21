@@ -1,4 +1,4 @@
-import { capitalizeSentence, slug } from "../utils/requiredMethods.js";
+import { capitalizeSentence } from "../utils/requiredMethods.js";
 import {
   createThemeCategoryRepo,
   findThemeCategoryByIdRepo,
@@ -6,14 +6,17 @@ import {
   deleteThemeCategoryRepo,
   getAllThemeCategoriesRepo,
 } from "../repositories/themeCategoryRepository.js";
+const slugifyCategory = (name) => {
+  return name.toLowerCase() + "-invitation";
+};
 
 export const createThemeCategoryService = async (data) => {
   if (!data.name || !data.type) {
     throw new Error("Name and type are required");
   }
   const newCategory = await createThemeCategoryRepo({
-    name: capitalizeSentenc(data.name),
-    slug: slug(data.name),
+    name: capitalizeSentence(data.name),
+    slug: slugifyCategory(data.name),
     type: data.type,
     status: data.status ?? true,
   });
@@ -28,7 +31,7 @@ export const updateThemeCategoryService = async (id, data) => {
   return await updateThemeCategoryRepo(
     themeCategory,
     ((data.name = capitalizeSentence(data.name)),
-    (data.slug = slug(data.name)),
+    (data.slug = slugifyCategory(data.name)),
     data)
   );
 };

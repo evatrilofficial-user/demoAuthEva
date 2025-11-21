@@ -10,7 +10,7 @@ import {resetAdminPasswordBySA} from "../controllers/SApasswordChange.js";
 const router = express.Router();
 
 router.post("/login", login);
-router.post("/change-password", authenticate, changePassword);
+router.post("/change-password", authenticate, changePassword);//allowed for all
 router.post(
   "/reset-admin-password/:adminId",
   authenticate, // must be logged in as super admin

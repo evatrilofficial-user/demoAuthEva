@@ -69,6 +69,10 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: true,
       },
+      meta_data: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
     },
     {
       sequelize,

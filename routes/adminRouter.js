@@ -18,7 +18,7 @@ import authorizeDynamic from "../middlewares/dynamicAuthorizeMiddleware.js";
 const router = express.Router();
 router.use(authorizeDynamic());
 
-router.get("/get-profile",getProfile);
+router.get("/get-profile",getProfile);// allowed for all
 
 router.post("/admin/store", addAdmin);
 router.get("/admin-role-permission/get", getAdminWithRoleAndPermissionsById);

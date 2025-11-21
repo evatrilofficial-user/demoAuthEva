@@ -66,6 +66,8 @@ export const AdminRepository = {
     if (role) {
       roleWhere.id = role;
     }
+    roleWhere.code = { [Op.ne]: "SUPER_ADMIN" };
+
 
     return db.Admin.findAll({
       where,

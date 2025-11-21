@@ -12,10 +12,28 @@ export default (sequelize, DataTypes) => {
       category_id: {
         type: DataTypes.TINYINT,
         allowNull: false,
+        validate: {
+          notEmpty: { msg: "Category is required" },
+          isInt: { msg: "category ID must be integer" },
+        },
       },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
+        validate: {
+          notEmpty: { msg: "name is required" },
+          len: {
+            args: [1, 10],
+            msg: "name must be between 1 and 10 characters",
+          },
+          isValidCharacters(value) {
+            if (!/^[a-zA-Z0-9 ]+$/.test(value)) {
+              throw new AppError(
+                "name can only contain letters, numbers, and spaces"
+              );
+            }
+          },
+        },
       },
 
       status: {
@@ -31,6 +49,16 @@ export default (sequelize, DataTypes) => {
       createdAt: "created_at",
       updatedAt: "updated_at",
       deletedAt: "deleted_at",
+      hooks: {
+        beforeValidate(themeType) {
+          if (themeType.name) {
+            themeType.name = themeType.name
+              .trim()
+              .replace(/[^a-zA-Z0-9\s]/g, "")
+              .replace(/\s+/g, " ");
+          }
+        },
+      },
     }
   );
 

@@ -1,6 +1,6 @@
-import { HasMany } from "sequelize";
 import db from "../models/index.js";
 import { match } from "path-to-regexp"; // ✅ npm install path-to-regexp
+import AppError from "../utils/AppError.js";
 
 const defaultPermissions = [
   { method: "get", router: "/api/v1/get-profile" },
@@ -8,12 +8,17 @@ const defaultPermissions = [
   { method: "get", router: "/api/v1/logout" },
   { method: "post", router: "/api/v1/request-password-otp" },
   { method: "post", router: "/api/v1/reset-password-otp" },
-  { method: "post", router: "/api/v1/get-occasion" },
+  { method: "get", router: "/api/v1/get-occasion" },
+  { method: "get", router: "/api/v1/get-occasion/:id" },
   { method: "get", router: "/api/v1/country/get" },
   { method: "get", router: "/api/v1/theme-category/get" },
   { method: "get", router: "/api/v1/admin-activity-log/get" },
   { method: "get", router: "/api/v1/admin-activity-log/:module/:id" },
-  { method: "get", router: "/api/v1/cart-summary/get" },
+  { method: "get", router: "/api/v1/change-password" },
+  { method: "get", router: "/api/v1/theme-type/get/:category_id" },
+  { method: "get", router: "/api/v1/user/get:/id" },
+  { method: "get", router: "/api/v1/user/get" },
+  // { method: "post", router: "/api/v1/webhook" },
 ];
 
 export default function authorizeDynamic() {
@@ -23,18 +28,16 @@ export default function authorizeDynamic() {
       if (req.path.startsWith("/webhook")) {
         return next();
       }
-      if (!admin?.id) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Unauthorized access" });
-      }
+      if (!admin?.id) throw new AppError("unauthenticated user", 401);
 
       // Normalize request info
       const method = req.method.toLowerCase();
       const path = req.baseUrl + req.path;
 
       // SuperAdmin bypass
-      if ((admin.roles || []).some((r) => r.code.toUpperCase() === "SA")) {
+      if (
+        (admin.roles || []).some((r) => r.code.toUpperCase() === "SUPER_ADMIN")
+      ) {
         return next();
       }
 
@@ -54,26 +57,16 @@ export default function authorizeDynamic() {
         where: { method, router: path },
       });
 
-      if (!permission) {
-        return res
-          .status(403)
-          .json({ success: false, message: "Access denied" });
-      }
+      if (!permission) throw new AppError("access denied", 403);
 
       // In-memory check
-      if (!admin.permissionsSet.has(permission.id)) {
-        return res.status(403).json({
-          success: false,
-          message: "Forbidden: insufficient permission",
-        });
-      }
+      if (!admin.permissionsSet.has(permission.id))
+        throw new AppError("access denied : insufficient permissions", 403);
 
       next();
     } catch (err) {
       console.error("Authorization middleware error:", err);
-      return res
-        .status(500)
-        .json({ success: false, message: "Internal server error" });
+      throw new AppError("Internal server error", 500);
     }
   };
 }

@@ -18,7 +18,15 @@ const authenticate = async (req, res, next) => {
     // console.log( "decoded info:---------------------------------",decoded);
     // Fetch admin along with roles & permissions in one query
     const admin = await db.Admin.findByPk(decoded.id, {
-      attributes: ["id", "name", "emp_id", "email","password", "status", "remember_token"],
+      attributes: [
+        "id",
+        "name",
+        "emp_id",
+        "email",
+        "password",
+        "status",
+        "remember_token",
+      ],
       include: [
         {
           model: db.Role,
@@ -42,8 +50,8 @@ const authenticate = async (req, res, next) => {
     if (!admin.status)
       throw new AppError("Account is inactive, contact super admin", 401);
 
-    if (admin.remember_token !== token)
-      throw new AppError("session expired, please login again.", 401);
+    // if (!admin.remember_token || admin.remember_token !== decoded.session)
+    //   throw new AppError("session expired, please login again.", 401);
 
     // Precompute permission set for faster authorization
     const permissionSet = new Set();
